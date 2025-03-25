@@ -1,10 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
     <%- include('../dyna/standard_heading') %>
-    <title>Spill portal</title>
-    <link rel="stylesheet" href="/static/css/unauth/main.css">
+    <title>Spill Portal - Velkommen</title>
+    <link rel="stylesheet" href="static/css/unauth/main.css">
 </head>
 <body>
+    <header class="landing-header">
+        <div class="header-container">
+            <div class="logo">
+                <span>Spill Portal</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/auth/login" class="login-btn">Logg inn</a>
+                <a href="/auth/register" class="register-btn">Registrer deg</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="landing-content">
+        <section class="hero">
+            <div class="hero-container">
+                <h1>Velkommen til Spill Portal</h1>
+                <p>Utforsk, spill og del spillopplevelser med andre spillere.</p>
+                <div class="hero-buttons">
+                    <a href="/auth/register" class="btn-primary">Kom i gang</a>
+                    <a href="/auth/login" class="btn-secondary">Logg inn</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="features-container">
+                <h2>Hvorfor velge Spill Portal?</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎮</div>
+                        <h3>Enormt spillbibliotek</h3>
+                        <p>Få tilgang til hundrevis av spill fra forskjellige sjangre.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>Sosial spillopplevelse</h3>
+                        <p>Koble til venner og spill sammen i sanntid.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h3>Konkurranser og Premier</h3>
+                        <p>Delta i ukentlige turneringer og vinn premier.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Spillstatistikk</h3>
+                        <p>Følg din framgang og sammenlign med venner.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+            <div class="footer-links">
+                <a href="#">Om oss</a>
+                <a href="#">Personvern</a>
+                <a href="#">Vilkår</a>
+                <a href="#">Kontakt</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

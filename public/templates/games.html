@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('./dyna/standard_heading') %>
+    <title>Spill - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/dashboard">Spill Portal</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/games" class="active">Spill</a></li>
+                    <li><a href="/profile">Min Profil</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="username"><%= user.username %></span>
+                <a href="/auth/logout" class="logout-btn">Logg ut</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <section class="games-hero">
+            <h1>Våre Spill</h1>
+            <p>Velg et spill under for å starte spillingen!</p>
+        </section>
+
+        <section class="games-grid">
+            <div class="game-card">
+                <div class="game-icon">🎮</div>
+                <h2>Hangman</h2>
+                <p>Gjett ordet før gubben blir hengt!</p>
+                <a href="/games/hangman" class="play-btn">Spill nå</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">✂️</div>
+                <h2>Stein-Saks-Papir</h2>
+                <p>Kan du slå datamaskinen?</p>
+                <a href="/games/stein-saks-papir" class="play-btn">Spill nå</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">⭕</div>
+                <h2>Tic-Tac-Toe</h2>
+                <p>Klassisk tre på rad spill!</p>
+                <a href="/games/tic-tac-toe" class="play-btn">Spill nå</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">🃏</div>
+                <h2>Blackjack</h2>
+                <p>Prøv å få 21 uten å overtrekke!</p>
+                <a href="/games/blackjack" class="play-btn">Spill nå</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('./dyna/standard_heading') %>
+    <title>Dashboard - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/dashboard">Spill Portal</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/games">Spill</a></li>
+                    <li><a href="/profile">Min Profil</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="username"><%= user.username %></span>
+                <a href="/auth/logout" class="logout-btn">Logg ut</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <section class="welcome-section">
+            <h1>Velkommen, <%= user.first_name || user.username %>!</h1>
+            <p>Dette er din spillportal hvor du kan finne og spille dine favoritt spill.</p>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2>Nylige spill</h2>
+                <p>Du har ingen nylige spill.</p>
+                <a href="/games" class="card-link">Finn spill</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <h2>Favoritter</h2>
+                <p>Du har ingen favoritt spill ennå.</p>
+                <a href="/games" class="card-link">Finn spill</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <h2>Din profil</h2>
+                <p>Oppdater din profil og innstillinger.</p>
+                <a href="/profile" class="card-link">Gå til profil</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+</body>
+</html>

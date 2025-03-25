@@ -8,7 +8,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 dotenv.config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const express_secret_key = process.env.EXPRESS_SECRET_KEY;
 
 app.set('trust proxy', 1);
@@ -34,7 +34,8 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Set up static files
+app.use('/static', express.static(path.join(__dirname, 'public/static')));
 
 // Set up view engine for HTML rendering
 app.set('views', path.join(__dirname, 'public', 'templates'));
@@ -49,43 +50,56 @@ if (!fs.existsSync(dbDir)) {
     console.log('Created db directory');
 }
 
-const sqlite3 = require('sqlite3').verbose();
-const dbPath = path.join(dbDir, 'spill_portal.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database', err.message);
-    } else {
-        console.log('Connected to SQLite database');
-    }
-});
+// Initialize database
+require('./init-db');
 
+// Import middleware
+const { isAuthenticated, isNotAuthenticated } = require('./middleware/auth');
+
+// Set up routes
+const authRoutes = require('./routes/auth');
+const profileRoutes = require('./routes/profile');
+
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+
+// Initialize user session
 app.use((req, res, next) => {
     if (!req.session.user) {
-        req.session.user = { initialized: true };
+        req.session.user = { initialized: true, loggedIn: false };
     }
     next();
 });
 
-process.on('SIGINT', () => {
-    db.close((err) => {
-        if (err) {
-            console.error('Error closing SQLite database', err.message);
-        } else {
-            console.log('SQLite database connection closed');
-        }
-        process.exit(0);
-    });
-});
-
-app.get('/', async (req, res) => {
+// Public routes
+app.get('/', (req, res) => {
+    if (req.session.user && req.session.user.loggedIn) {
+        return res.redirect('/dashboard');
+    }
     res.render('unauth/index.html');
 });
 
+// Protected routes
+app.get('/dashboard', isAuthenticated, (req, res) => {
+    res.render('dashboard.html', { user: req.session.user });
+});
 
+// For the profile page - handled by profile routes
+app.get('/profile', isAuthenticated, (req, res) => {
+    res.render('profile.html', { user: req.session.user });
+});
+
+// Placeholder for games page
+app.get('/games', isAuthenticated, (req, res) => {
+    res.render('games.html', { user: req.session.user });
+});
+
+// Catch-all route for 404s
 app.use((req, res) => {
     res.status(404).render('404.html');
 });
 
+// Start the server
 app.listen(port, "0.0.0.0", () => {
     console.log(`Server running at http://localhost:${port}`);
 });

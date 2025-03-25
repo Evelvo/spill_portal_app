@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('./dyna/standard_heading') %>
+    <title>Min Profil - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/dashboard">Spill Portal</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/games">Spill</a></li>
+                    <li><a href="/profile" class="active">Min Profil</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="username"><%= user.username %></span>
+                <a href="/auth/logout" class="logout-btn">Logg ut</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <section class="profile-container">
+            <h1>Min Profil</h1>
+            
+            <% if (locals.success) { %>
+                <div class="alert alert-success">
+                    <%= success %>
+                </div>
+            <% } %>
+            
+            <% if (locals.error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+            
+            <div class="profile-card">
+                <h2>Profilinformasjon</h2>
+                <form action="/profile/update" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="username">Brukernavn</label>
+                        <input type="text" id="username" name="username" value="<%= user.username %>" disabled>
+                        <span class="form-hint">Brukernavn kan ikke endres</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-post</label>
+                        <input type="email" id="email" name="email" value="<%= user.email %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="first_name">Fornavn</label>
+                        <input type="text" id="first_name" name="first_name" value="<%= user.first_name || '' %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="last_name">Etternavn</label>
+                        <input type="text" id="last_name" name="last_name" value="<%= user.last_name || '' %>">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Oppdater profil</button>
+                </form>
+            </div>
+            
+            <div class="profile-card">
+                <h2>Endre passord</h2>
+                <form action="/profile/change-password" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="current_password">Nåværende passord</label>
+                        <input type="password" id="current_password" name="current_password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password">Nytt passord</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Bekreft nytt passord</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Endre passord</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+</body>
+</html>
