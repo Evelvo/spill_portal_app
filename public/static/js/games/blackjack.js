@@ -200,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Disable game buttons
         hitBtn.disabled = true;
         standBtn.disabled = true;
+        
+        // Save game statistics
+        saveGameStats(result);
     }
     
     // Reveal dealer's hidden card
@@ -295,6 +298,36 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update scores and check for game end
         updateScores();
         checkGameEnd();
+    }
+    
+    // Function to save game statistics to the server
+    function saveGameStats(result) {
+        // Prepare statistics based on game result
+        const stats = {
+            gameType: 'blackjack',
+            wins: result === 'win' ? 1 : 0,
+            losses: result === 'lose' ? 1 : 0,
+            draws: result === 'draw' ? 1 : 0,
+            score: calculateScore(playerHand) // Use player's score as the game score
+        };
+        
+        // Send data to the server
+        fetch('/api/stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(stats)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Error saving game stats:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving game stats:', error);
+        });
     }
     
     // Event listeners

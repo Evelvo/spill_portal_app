@@ -1,0 +1,153 @@
+<!-- public/templates/leaderboard.html -->
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('./dyna/standard_heading') %>
+    <title>Leaderboard - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/leaderboard.css">
+</head>
+<body>
+    <%- include('./dyna/dashboard-header') %>
+
+    <main class="dashboard-content">
+        <section class="leaderboard-header">
+            <h1>Leaderboard</h1>
+            <p>Se hvem som leder i alle spillene!</p>
+            
+            <div class="game-filter">
+                <label for="game-select">Filtrer etter spill:</label>
+                <select id="game-select" onchange="location.href=this.value">
+                    <option value="/leaderboard" <%= selectedGame === 'all' ? 'selected' : '' %>>Alle spill</option>
+                    <% games.forEach(game => { %>
+                        <option value="/leaderboard/<%= game.id %>" <%= selectedGame === game.id ? 'selected' : '' %>><%= game.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+        </section>
+        
+        <section class="personal-stats">
+            <h2>Dine spillstatistikker</h2>
+            <% if (userStats && userStats.length > 0) { %>
+                <div class="stats-cards">
+                    <% userStats.forEach(stat => { %>
+                        <div class="stats-card">
+                            <div class="stats-card-header">
+                                <h3><%= getGameName(stat.game_type) %></h3>
+                            </div>
+                            <div class="stats-card-content">
+                                <div class="stat-row">
+                                    <span class="stat-label">Spill spilt:</span>
+                                    <span class="stat-value"><%= stat.games_played %></span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Seiere:</span>
+                                    <span class="stat-value"><%= stat.wins %></span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Tap:</span>
+                                    <span class="stat-value"><%= stat.losses %></span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Uavgjort:</span>
+                                    <span class="stat-value"><%= stat.draws %></span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Vinnprosent:</span>
+                                    <span class="stat-value"><%= stat.win_percentage %>%</span>
+                                </div>
+                                <% if (stat.best_score > 0) { %>
+                                <div class="stat-row">
+                                    <span class="stat-label">Beste poeng:</span>
+                                    <span class="stat-value"><%= stat.best_score %></span>
+                                </div>
+                                <% } %>
+                            </div>
+                            <div class="stats-card-footer">
+                                <a href="/games/<%= stat.game_type %>" class="play-game-btn">Spill nå</a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="no-stats">
+                    <p>Du har ikke spilt noen spill ennå. <a href="/games">Prøv et spill nå!</a></p>
+                </div>
+            <% } %>
+        </section>
+        
+        <section class="global-leaderboard">
+            <h2><%= selectedGame === 'all' ? 'Topp spillere' : getGameName(selectedGame) + ' Leaderboard' %></h2>
+            
+            <% if (leaderboardData && leaderboardData.length > 0) { %>
+                <div class="table-container">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Spiller</th>
+                                <% if (selectedGame === 'all') { %>
+                                    <th>Spill</th>
+                                <% } %>
+                                <th>Seiere</th>
+                                <th>Tap</th>
+                                <th>Spilt</th>
+                                <th>Vinnprosent</th>
+                                <% if (selectedGame !== 'all') { %>
+                                    <th>Beste poeng</th>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% leaderboardData.forEach((entry, index) => { %>
+                                <tr class="<%= entry.username === user.username ? 'highlight-row' : '' %>">
+                                    <td><%= index + 1 %></td>
+                                    <td>
+                                        <%= entry.first_name && entry.last_name 
+                                            ? `${entry.first_name} ${entry.last_name} (${entry.username})` 
+                                            : entry.username 
+                                        %>
+                                    </td>
+                                    <% if (selectedGame === 'all') { %>
+                                        <td><%= getGameName(entry.game_type) %></td>
+                                    <% } %>
+                                    <td><%= entry.wins %></td>
+                                    <td><%= entry.losses %></td>
+                                    <td><%= entry.games_played %></td>
+                                    <td><%= entry.win_percentage %>%</td>
+                                    <% if (selectedGame !== 'all') { %>
+                                        <td><%= entry.best_score %></td>
+                                    <% } %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="no-data">
+                    <p>Ingen data er tilgjengelig for denne leaderboarden ennå.</p>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Helper function to get game name from ID
+        function getGameName(gameType) {
+            const gameNames = {
+                'hangman': 'Hangman',
+                'tic-tac-toe': 'Tic-Tac-Toe',
+                'stein-saks-papir': 'Stein-Saks-Papir',
+                'blackjack': 'Blackjack'
+            };
+            return gameNames[gameType] || gameType;
+        }
+    </script>
+</body>
+</html>

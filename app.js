@@ -5,6 +5,8 @@ const path = require('path');
 const app = express();
 const dotenv = require("dotenv");
 const SQLiteStore = require('connect-sqlite3')(session);
+const helpers = require('./helpers');
+
 
 dotenv.config();
 
@@ -29,6 +31,12 @@ app.use(session({
         sameSite: 'lax'
     }
 }));
+
+app.use((req, res, next) => {
+    res.locals.getGameName = helpers.getGameName;
+    // Add any other helper functions here
+    next();
+});
 
 app.use(bodyParser.json());
 
@@ -59,9 +67,13 @@ const { isAuthenticated, isNotAuthenticated } = require('./middleware/auth');
 // Set up routes
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const leaderboardRoutes = require('./routes/leaderboard');
+const apiRoutes = require('./routes/api');
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/leaderboard', leaderboardRoutes);
+app.use('/api', apiRoutes);
 
 // Initialize user session
 app.use((req, res, next) => {
@@ -80,8 +92,33 @@ app.get('/', (req, res) => {
 });
 
 // Protected routes
-app.get('/dashboard', isAuthenticated, (req, res) => {
-    res.render('dashboard.html', { user: req.session.user });
+app.get('/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        const gameService = require('./services/game-service');
+        const gameStats = await gameService.getGameStats();
+        const userStats = await gameService.getUserStats(req.session.user.id);
+        
+        // Add helper function for templates
+        const getGameName = (gameType) => {
+            const gameNames = {
+                'hangman': 'Hangman',
+                'tic-tac-toe': 'Tic-Tac-Toe',
+                'stein-saks-papir': 'Stein-Saks-Papir',
+                'blackjack': 'Blackjack'
+            };
+            return gameNames[gameType] || gameType;
+        };
+        
+        res.render('dashboard.html', { 
+            user: req.session.user,
+            gameStats,
+            userStats,
+            getGameName // Pass the function to the template
+        });
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+        res.render('dashboard.html', { user: req.session.user });
+    }
 });
 
 // For the profile page - handled by profile routes

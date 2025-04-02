@@ -143,6 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameActive = false;
                 messageEl.textContent = 'Gratulerer, du vant!';
                 messageEl.classList.add('success');
+                
+                // Save winning statistics
+                saveGameStats(true);
             }
         } else {
             // Wrong guess
@@ -161,8 +164,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameActive = false;
                 messageEl.textContent = `Du tapte! Ordet var: ${word}`;
                 messageEl.classList.add('error');
+                
+                // Save losing statistics
+                saveGameStats(false);
             }
         }
+    }
+    
+    // Function to save game statistics to the server
+    function saveGameStats(isWin) {
+        // Calculate score based on remaining wrong guesses allowed
+        const maxWrongGuesses = hangmanParts.length;
+        const remainingGuesses = maxWrongGuesses - wrongGuesses;
+        const score = isWin ? remainingGuesses * 10 : 0; // 10 points per remaining guess
+        
+        // Prepare statistics
+        const stats = {
+            gameType: 'hangman',
+            wins: isWin ? 1 : 0,
+            losses: isWin ? 0 : 1,
+            draws: 0,
+            score: score
+        };
+        
+        // Send data to the server
+        fetch('/api/stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(stats)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Error saving game stats:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving game stats:', error);
+        });
     }
     
     // Handle keyboard events

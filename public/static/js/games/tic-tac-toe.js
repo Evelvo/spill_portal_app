@@ -92,6 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
             scores[currentPlayer]++;
             updateScores();
             
+            // Save game statistics based on who won
+            if (currentPlayer === 'X') {
+                saveGameStats('win');
+            } else {
+                saveGameStats('lose');
+            }
+            
             gameActive = false;
             return true; // Game ended
         }
@@ -101,6 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = 'Uavgjort!';
             scores.draw++;
             updateScores();
+            
+            // Save draw statistics
+            saveGameStats('draw');
             
             gameActive = false;
             return true; // Game ended
@@ -234,6 +244,52 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreX.textContent = scores.X;
         scoreO.textContent = scores.O;
         scoreDraw.textContent = scores.draw;
+    }
+    
+    // Function to save game statistics to the server
+    function saveGameStats(result) {
+        // Calculate score based on winning or drawing
+        let score = 0;
+        let wins = 0;
+        let losses = 0;
+        let draws = 0;
+        
+        if (result === 'win') {
+            score = 10;
+            wins = 1;
+        } else if (result === 'lose') {
+            losses = 1;
+        } else if (result === 'draw') {
+            score = 5;
+            draws = 1;
+        }
+        
+        // Prepare statistics
+        const stats = {
+            gameType: 'tic-tac-toe',
+            wins: wins,
+            losses: losses,
+            draws: draws,
+            score: score
+        };
+        
+        // Send data to the server
+        fetch('/api/stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(stats)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Error saving game stats:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving game stats:', error);
+        });
     }
     
     // Event listeners

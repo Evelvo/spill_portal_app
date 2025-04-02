@@ -6,24 +6,7 @@
     <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 <body>
-    <header class="dashboard-header">
-        <div class="header-container">
-            <div class="logo">
-                <a href="/dashboard">Spill Portal</a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/games">Spill</a></li>
-                    <li><a href="/profile">Min Profil</a></li>
-                </ul>
-            </nav>
-            <div class="user-menu">
-                <span class="username"><%= user.username %></span>
-                <a href="/auth/logout" class="logout-btn">Logg ut</a>
-            </div>
-        </div>
-    </header>
+    <%- include('./dyna/dashboard-header') %>
 
     <main class="dashboard-content">
         <section class="welcome-section">
@@ -31,17 +14,96 @@
             <p>Dette er din spillportal hvor du kan finne og spille dine favoritt spill.</p>
         </section>
 
+        <% if (locals.userStats && userStats.length > 0) { %>
+        <section class="stats-overview">
+            <h2>Dine spillstatistikker</h2>
+            <div class="stats-summary">
+                <div class="stat-box">
+                    <div class="stat-value"><%= userStats.reduce((sum, stat) => sum + stat.games_played, 0) %></div>
+                    <div class="stat-label">Totale spill</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><%= userStats.reduce((sum, stat) => sum + stat.wins, 0) %></div>
+                    <div class="stat-label">Seiere</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">
+                        <% 
+                            const totalGames = userStats.reduce((sum, stat) => sum + stat.games_played, 0);
+                            const totalWins = userStats.reduce((sum, stat) => sum + stat.wins, 0);
+                            const winPercentage = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
+                        %>
+                        <%= winPercentage %>%
+                    </div>
+                    <div class="stat-label">Vinnprosent</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><%= userStats.reduce((sum, stat) => sum + stat.best_score, 0) %></div>
+                    <div class="stat-label">Totale poeng</div>
+                </div>
+            </div>
+            <div class="view-more">
+                <a href="/leaderboard" class="btn-view-more">Se detaljert statistikk</a>
+            </div>
+        </section>
+        <% } %>
+
         <section class="dashboard-grid">
             <div class="dashboard-card">
                 <h2>Nylige spill</h2>
-                <p>Du har ingen nylige spill.</p>
+                <% if (locals.userStats && userStats.length > 0) { %>
+                    <ul class="recent-games-list">
+                        <% userStats.slice(0, 3).forEach(stat => { %>
+                            <li class="recent-game-item">
+                                <div class="game-info">
+                                    <span class="game-name"><%= getGameName(stat.game_type) %></span>
+                                    <span class="game-result <%= stat.wins > 0 ? 'win' : stat.losses > 0 ? 'loss' : 'draw' %>">
+                                        <%= stat.wins > 0 ? 'Vunnet' : stat.losses > 0 ? 'Tapt' : 'Uavgjort' %>
+                                    </span>
+                                </div>
+                                <span class="game-stats">Spilt: <%= stat.games_played %> | Vunnet: <%= stat.wins %></span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>Du har ingen nylige spill.</p>
+                <% } %>
                 <a href="/games" class="card-link">Finn spill</a>
             </div>
             
             <div class="dashboard-card">
-                <h2>Favoritter</h2>
-                <p>Du har ingen favoritt spill ennå.</p>
-                <a href="/games" class="card-link">Finn spill</a>
+                <h2>Populære spill</h2>
+                <% if (locals.gameStats && gameStats.popularGames && gameStats.popularGames.length > 0) { %>
+                    <ul class="popular-games-list">
+                        <% gameStats.popularGames.slice(0, 3).forEach(game => { %>
+                            <li class="popular-game-item">
+                                <span class="game-name"><%= getGameName(game.game_type) %></span>
+                                <span class="plays-count"><%= game.total_plays %> spill</span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>Ingen populære spill ennå.</p>
+                <% } %>
+                <a href="/games" class="card-link">Utforsk spill</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <h2>Leaderboard</h2>
+                <% if (locals.gameStats && gameStats.topPlayers && gameStats.topPlayers.length > 0) { %>
+                    <ul class="top-players-list">
+                        <% gameStats.topPlayers.slice(0, 3).forEach((player, index) => { %>
+                            <li class="top-player-item <%= player.username === user.username ? 'is-you' : '' %>">
+                                <span class="player-rank">#<%= index + 1 %></span>
+                                <span class="player-name"><%= player.username %></span>
+                                <span class="player-wins"><%= player.total_wins %> seiere</span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p>Ingen topplasseringer ennå.</p>
+                <% } %>
+                <a href="/leaderboard" class="card-link">Se full leaderboard</a>
             </div>
             
             <div class="dashboard-card">

@@ -100,7 +100,56 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             updateScore();
+            
+            // Save game statistics
+            saveGameStats(result);
         }, 500);
+    }
+    
+    // Function to save game statistics to the server
+    function saveGameStats(result) {
+        // Calculate statistics based on result
+        let wins = 0;
+        let losses = 0;
+        let draws = 0;
+        let score = 0;
+        
+        if (result === 'user') {
+            wins = 1;
+            score = 5;
+        } else if (result === 'computer') {
+            losses = 1;
+        } else {
+            draws = 1;
+            score = 1;
+        }
+        
+        // Prepare statistics
+        const stats = {
+            gameType: 'stein-saks-papir',
+            wins: wins,
+            losses: losses,
+            draws: draws,
+            score: score
+        };
+        
+        // Send data to the server
+        fetch('/api/stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(stats)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error('Error saving game stats:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving game stats:', error);
+        });
     }
     
     // Event listeners
