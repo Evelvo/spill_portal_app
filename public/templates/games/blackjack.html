@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('../dyna/standard_heading') %>
+    <title>Blackjack - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/games/blackjack.css">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/dashboard">Spill Portal</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/games" class="active">Spill</a></li>
+                    <li><a href="/profile">Min Profil</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="username"><%= user.username %></span>
+                <a href="/auth/logout" class="logout-btn">Logg ut</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="game-container">
+            <div class="game-header">
+                <h1>Blackjack</h1>
+                <a href="/games" class="btn-back">← Tilbake til spill</a>
+            </div>
+            
+            <div class="blackjack-game">
+                <div class="stats-bar">
+                    <div class="stats-item">
+                        <div class="stats-label">Seiersrekke</div>
+                        <div id="win-streak" class="stats-value">0</div>
+                    </div>
+                    <div class="stats-item">
+                        <div class="stats-label">Seiere</div>
+                        <div id="wins" class="stats-value">0</div>
+                    </div>
+                    <div class="stats-item">
+                        <div class="stats-label">Tap</div>
+                        <div id="losses" class="stats-value">0</div>
+                    </div>
+                    <div class="stats-item">
+                        <div class="stats-label">Uavgjort</div>
+                        <div id="draws" class="stats-value">0</div>
+                    </div>
+                </div>
+                
+                <div class="game-table">
+                    <div class="dealer-area">
+                        <h2>Dealer <span id="dealer-score" class="score-badge">0</span></h2>
+                        <div id="dealer-cards" class="cards-container"></div>
+                    </div>
+                    
+                    <div id="game-message" class="game-message"></div>
+                    
+                    <div class="player-area">
+                        <h2><%= user.username %> <span id="player-score" class="score-badge">0</span></h2>
+                        <div id="player-cards" class="cards-container"></div>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <button id="hit-btn" class="action-btn">Trekk kort</button>
+                    <button id="stand-btn" class="action-btn">Stå</button>
+                    <button id="new-game-btn" class="btn-primary">Nytt Spill</button>
+                </div>
+                
+                <div class="game-rules">
+                    <h3>Spilleregler</h3>
+                    <p>Målet med Blackjack er å få en hånd med en total verdi nærmere 21 enn dealeren, uten å overstige 21.</p>
+                    <ul>
+                        <li>Kort fra 2-10 er verdt deres tallverdi.</li>
+                        <li>Knekt, Dame og Konge er alle verdt 10.</li>
+                        <li>Ess kan telle som 1 eller 11, avhengig av hva som er best for hånden.</li>
+                        <li>Hvis du går over 21, 'buster' du og taper.</li>
+                        <li>Dealeren må trekke til 16 og stå på 17 eller høyere.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/games/blackjack.js"></script>
+</body>
+</html>

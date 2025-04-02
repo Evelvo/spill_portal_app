@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <%- include('../dyna/standard_heading') %>
+    <title>Stein-Saks-Papir - Spill Portal</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/games.css">
+    <link rel="stylesheet" href="/static/css/games/stein-saks-papir.css">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/dashboard">Spill Portal</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/games" class="active">Spill</a></li>
+                    <li><a href="/profile">Min Profil</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="username"><%= user.username %></span>
+                <a href="/auth/logout" class="logout-btn">Logg ut</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <div class="game-container">
+            <div class="game-header">
+                <h1>Stein-Saks-Papir</h1>
+                <a href="/games" class="btn-back">← Tilbake til spill</a>
+            </div>
+            
+            <div class="rps-game">
+                <div class="score-board">
+                    <div class="score">
+                        <span id="user-score">0</span>
+                        <span>-</span>
+                        <span id="computer-score">0</span>
+                    </div>
+                    <div class="score-label">
+                        <span><%= user.username %></span>
+                        <span>Datamaskin</span>
+                    </div>
+                </div>
+                
+                <div class="result-container">
+                    <div id="result-message" class="result-message">Velg ditt trekk!</div>
+                    
+                    <div class="game-hands">
+                        <div class="hand user-hand">
+                            <div id="user-hand" class="hand-image">?</div>
+                            <div class="hand-label"><%= user.username %></div>
+                        </div>
+                        
+                        <div class="hand computer-hand">
+                            <div id="computer-hand" class="hand-image">?</div>
+                            <div class="hand-label">Datamaskin</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="choices">
+                    <button id="rock" class="choice-btn">
+                        <div class="choice-icon">✊</div>
+                        <span>Stein</span>
+                    </button>
+                    
+                    <button id="paper" class="choice-btn">
+                        <div class="choice-icon">✋</div>
+                        <span>Papir</span>
+                    </button>
+                    
+                    <button id="scissors" class="choice-btn">
+                        <div class="choice-icon">✌️</div>
+                        <span>Saks</span>
+                    </button>
+                </div>
+                
+                <div class="game-controls">
+                    <button id="reset-btn" class="btn-primary">Nullstill Spill</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Spill Portal. Alle rettigheter reservert.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/games/stein-saks-papir.js"></script>
+</body>
+</html>

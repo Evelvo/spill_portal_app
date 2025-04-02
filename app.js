@@ -94,6 +94,22 @@ app.get('/games', isAuthenticated, (req, res) => {
     res.render('games.html', { user: req.session.user });
 });
 
+app.get('/games/hangman', isAuthenticated, (req, res) => {
+    res.render('games/hangman.html', { user: req.session.user });
+});
+
+app.get('/games/stein-saks-papir', isAuthenticated, (req, res) => {
+    res.render('games/stein-saks-papir.html', { user: req.session.user });
+});
+
+app.get('/games/tic-tac-toe', isAuthenticated, (req, res) => {
+    res.render('games/tic-tac-toe.html', { user: req.session.user });
+});
+
+app.get('/games/blackjack', isAuthenticated, (req, res) => {
+    res.render('games/blackjack.html', { user: req.session.user });
+});
+
 // Catch-all route for 404s
 app.use((req, res) => {
     res.status(404).render('404.html');
